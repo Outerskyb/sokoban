@@ -248,6 +248,7 @@ void game_over(void) {
 int main(void) {
 	int key;
 	remove_cursor();
+	system("mode con:cols=60 lines=25");
 	srand(time(NULL));
 	init_map();
 	load_map(1);
