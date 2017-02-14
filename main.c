@@ -250,7 +250,7 @@ int main(void) {
 	remove_cursor();
 	srand(time(NULL));
 	init_map();
-	load_map();
+	load_map(1);
 	memorise_stone_position();
 	show_map();
 	while (!fill_check()) {
