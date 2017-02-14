@@ -43,8 +43,13 @@ void init_map(void) {
 	memset(map, 4, sizeof(map));
 }
 
-void load_map(void) {
-	FILE* mapfile = fopen(".\\maps\\map1.txt", "rt");
+void load_map(int num) {
+	char route[19]=".\\maps\\map";
+	char number[3];
+	char txt[5] = ".txt";
+	strcat(route, itoa(num,number,10));
+	strcat(route, txt);
+	FILE* mapfile = fopen(route, "rt");
 	int i, j,temp;
 	for (i = 0; i < HEIGHT; i++) {
 		for (j = 0; j < WIDTH; j++) {
@@ -241,26 +246,23 @@ void game_over(void) {
 }
 
 int main(void) {
+	int key;
 	remove_cursor();
 	srand(time(NULL));
 	init_map();
 	load_map();
 	memorise_stone_position();
 	show_map();
-	while (1) {
+	while (!fill_check()) {
 		// 키보드 입력시 동작//
-		if (fill_check()) {
-			break;
-		}
-		while (_kbhit()) {
-			int key = getch();
+			key = getch();
+			key = getch();
 			if (key == UP || key == DOWN || key == RIGHT || key == LEFT) {
 				move_character(key);
 				move++;
 				show_map();
 			}
 			fflush(stdin);
-		}
 		Sleep(10);
 	}
 	game_over();
