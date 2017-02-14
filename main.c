@@ -251,22 +251,22 @@ int main(void) {
 	system("mode con:cols=60 lines=25");
 	srand(time(NULL));
 	{
-	init_map();
-	load_map(1);
-	memorise_stone_position();
-	show_map();
-	while (!fill_check()) {
-		// 키보드 입력시 동작//
-			key = getch();
-			key = getch();
-			if (key == UP || key == DOWN || key == RIGHT || key == LEFT) {
-				move_character(key);
-				move++;
-				show_map();
-			}
-			fflush(stdin);
-		Sleep(10);
-	}
+		init_map();
+		load_map(1);
+		memorise_stone_position();
+		show_map();
+		while (!fill_check()) {
+			// 키보드 입력시 동작//
+				key = getch();
+				key = getch();
+				if (key == UP || key == DOWN || key == RIGHT || key == LEFT) {
+					move_character(key);
+					move++;
+					show_map();
+				}
+				fflush(stdin);
+			Sleep(10);
+		}
 	}
 	game_over();
 	return 0;
