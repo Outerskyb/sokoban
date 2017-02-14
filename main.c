@@ -250,6 +250,7 @@ int main(void) {
 	remove_cursor();
 	system("mode con:cols=60 lines=25");
 	srand(time(NULL));
+	{
 	init_map();
 	load_map(1);
 	memorise_stone_position();
@@ -265,6 +266,7 @@ int main(void) {
 			}
 			fflush(stdin);
 		Sleep(10);
+	}
 	}
 	game_over();
 	return 0;
