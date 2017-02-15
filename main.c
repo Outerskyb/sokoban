@@ -83,6 +83,7 @@ void select_menu() {
 			if (choice == 0)
 				choice = 1;
 		}
+		
 		switch (choice)
 		{
 		case 0:
