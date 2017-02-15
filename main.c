@@ -47,8 +47,7 @@ void load_map(int num) {
 	char route[19]=".\\maps\\map";
 	char number[3];
 	char txt[5] = ".txt";
-	strcat(route, itoa(num,number,10));
-	strcat(route, txt);
+	strcat(strcat(route, itoa(num, number, 10)), txt);
 	FILE* mapfile = fopen(route, "rt");
 	int i, j,temp;
 	for (i = 0; i < HEIGHT; i++) {
@@ -250,24 +249,23 @@ int main(void) {
 	remove_cursor();
 	system("mode con:cols=60 lines=25");
 	srand(time(NULL));
-	{
-		init_map();
-		load_map(1);
-		memorise_stone_position();
-		show_map();
-		while (!fill_check()) {
-			// 키보드 입력시 동작//
-				key = getch();
-				key = getch();
-				if (key == UP || key == DOWN || key == RIGHT || key == LEFT) {
-					move_character(key);
-					move++;
-					show_map();
-				}
-				fflush(stdin);
-			Sleep(10);
-		}
+	init_map();
+	load_map(1);
+	memorise_stone_position();
+	show_map();
+	while (!fill_check()) {
+		// 키보드 입력시 동작//
+			key = getch();
+			key = getch();
+			if (key == UP || key == DOWN || key == RIGHT || key == LEFT) {
+				move_character(key);
+				move++;
+				show_map();
+			}
+			fflush(stdin);
+		Sleep(10);
 	}
+	
 	game_over();
 	return 0;
 }
