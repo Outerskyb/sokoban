@@ -23,6 +23,9 @@ int stone;
 int move;
 int previous_floor = 4;
 
+int choice;
+int map_num=1;
+
 ordered_pair character;
 ordered_pair *stone_position;
 
@@ -44,21 +47,22 @@ void init_map(void) {
 }
 
 void load_map(int num) {
-	char route[19]=".\\maps\\map";
+	char route[19] = ".\\maps\\map";
 	char number[3];
 	char txt[5] = ".txt";
-	strcat(strcat(route, itoa(num, number, 10)), txt);
+	strcat(route, itoa(num, number, 10));
+	strcat(route, txt);
 	FILE* mapfile = fopen(route, "rt");
-	int i, j,temp;
+	int i, j, temp;
 	for (i = 0; i < HEIGHT; i++) {
 		for (j = 0; j < WIDTH; j++) {
 			temp = fgetc(mapfile);
 			map[i][j] = temp - '0';
-			if (temp -'0' == 1) {
+			if (temp - '0' == 1) {
 				character.x = j;
 				character.y = i;
 			}
-			else if (temp -'0' == 2) {
+			else if (temp - '0' == 2) {
 				stone++;
 			}
 		}
@@ -76,7 +80,7 @@ void memorise_stone_position(void) {
 			if (map[i][j] == 2) {
 				stone_position[count].y = i;
 				stone_position[count++].x = j;
- 			}
+			}
 			if (count == stone) {
 				return;
 			}
@@ -84,7 +88,7 @@ void memorise_stone_position(void) {
 	}
 }
 
-void move_character(int way){
+void move_character(int way) {
 	if (way == UP) {
 		if (map[character.y - 1][character.x] == 4) {//빈칸으로 이동
 			map[character.y][character.x] = previous_floor;
@@ -98,7 +102,7 @@ void move_character(int way){
 			previous_floor = 2;
 			character.y--;
 		}
-		else if (map[character.y - 1][character.x] == 3 && (map[character.y - 2][character.x] == 4 || map[character.y - 2][character.x]==2)) {//밀기
+		else if (map[character.y - 1][character.x] == 3 && (map[character.y - 2][character.x] == 4 || map[character.y - 2][character.x] == 2)) {//밀기
 			map[character.y][character.x] = previous_floor;
 			map[character.y - 1][character.x] = 1;
 			map[character.y - 2][character.x] = 3;
@@ -118,7 +122,7 @@ void move_character(int way){
 			previous_floor = 2;
 			character.y++;
 		}
-		else if (map[character.y + 1][character.x] == 3 && ( map[character.y + 2][character.x] == 4 || map[character.y+2][character.x] == 2)) {//밀기
+		else if (map[character.y + 1][character.x] == 3 && (map[character.y + 2][character.x] == 4 || map[character.y + 2][character.x] == 2)) {//밀기
 			map[character.y][character.x] = previous_floor;
 			map[character.y + 1][character.x] = 1;
 			map[character.y + 2][character.x] = 3;
@@ -188,6 +192,7 @@ int fill_check(void) {
 
 void show_map(void) { //맵표현 gotoxy
 	int i, j;
+
 	gotoxy(1, 1);
 	printf("\n");
 
@@ -214,7 +219,8 @@ void show_map(void) { //맵표현 gotoxy
 				}
 				else if (map[i][j] == 3) {
 					printf("●");//stone
-				}else {
+				}
+				else {
 					printf("　");//길
 				}
 			}
@@ -223,7 +229,8 @@ void show_map(void) { //맵표현 gotoxy
 				printf("moves:%d", move);
 			}
 			printf("\n");
-		}else{
+		}
+		else {
 			printf("└");
 			for (j = 0; j < WIDTH; j++) { //메인창 바닥
 				printf("─");
@@ -240,22 +247,36 @@ void game_over(void) {
 	show_map();
 	gotoxy((WIDTH + 7) / 2, (HEIGHT + 1) / 2);
 	printf("Game Over");
-	gotoxy((WIDTH + 7) / 2, ((HEIGHT + 1) / 2)+1);
+	gotoxy((WIDTH + 7) / 2, ((HEIGHT + 1) / 2) + 1);
 	printf("move :%d", move);
 }
 
 int main(void) {
 	int key;
-	remove_cursor();
+	int map_num;
+
+	remove_cursor(); 
 	system("mode con:cols=60 lines=25");
 	srand(time(NULL));
-	init_map();
-	load_map(1);
-	memorise_stone_position();
-	show_map();
-	while (!fill_check()) {
-		// 키보드 입력시 동작//
+
+	while(1)
+	{
+		select_menu();
+		if (choice == 1) break;
+		map_num=select_map();
+
+		init_map();
+		load_map(map_num);
+		memorise_stone_position();
+		show_map();
+
+		gotoxy(45, 15);
+		printf("처음으로 r");
+
+		while (!fill_check()) {
+			// 키보드 입력시 동작//
 			key = getch();
+			if (key == 'r') break;
 			key = getch();
 			if (key == UP || key == DOWN || key == RIGHT || key == LEFT) {
 				move_character(key);
@@ -263,9 +284,13 @@ int main(void) {
 				show_map();
 			}
 			fflush(stdin);
-		Sleep(10);
+			Sleep(10);
+		}
+		game_over();
+
+		Sleep(1000);
+		system("cls");
 	}
-	
-	game_over();
+
 	return 0;
 }
