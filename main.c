@@ -50,8 +50,7 @@ void load_map(int num) {
 	char route[19] = ".\\maps\\map";
 	char number[3];
 	char txt[5] = ".txt";
-	strcat(route, itoa(num, number, 10));
-	strcat(route, txt);
+	strcat(strcat(route, itoa(num, number, 10)), txt);
 	FILE* mapfile = fopen(route, "rt");
 	int i, j, temp;
 	for (i = 0; i < HEIGHT; i++) {
