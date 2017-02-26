@@ -24,10 +24,12 @@ int move;
 int previous_floor = 4;
 
 int choice;
-int map_num=1;
+int map_num = 1;
 
 ordered_pair character;
 ordered_pair *stone_position;
+
+
 
 void remove_cursor(void) {
 	CONSOLE_CURSOR_INFO curInfo;
@@ -44,6 +46,14 @@ void gotoxy(int x, int y)//gotoxy
 
 void init_map(void) {
 	memset(map, 4, sizeof(map));
+}
+
+void init_global(void) {
+	init_map();
+	stone = 0;
+	move = 0;
+	previous_floor = 4;
+	choice = 0;
 }
 
 void load_map(int num) {
@@ -88,86 +98,67 @@ void memorise_stone_position(void) {
 }
 
 void move_character(int way) {
+	int ver1, ver2, ho1, ho2;
+	int check = 0;
 	if (way == UP) {
-		if (map[character.y - 1][character.x] == 4) {//빈칸으로 이동
-			map[character.y][character.x] = previous_floor;
-			map[character.y - 1][character.x] = 1;
-			previous_floor = 4;
-			character.y--;
-		}
-		else if (map[character.y - 1][character.x] == 2) {//hole로 이동
-			map[character.y][character.x] = previous_floor;
-			map[character.y - 1][character.x] = 1;
-			previous_floor = 2;
-			character.y--;
-		}
-		else if (map[character.y - 1][character.x] == 3 && (map[character.y - 2][character.x] == 4 || map[character.y - 2][character.x] == 2)) {//밀기
-			map[character.y][character.x] = previous_floor;
-			map[character.y - 1][character.x] = 1;
-			map[character.y - 2][character.x] = 3;
-			character.y--;
-		}
+		ver1 = -1;
+		ver2 = -2;
+		ho1 = 0;
+		ho2 = 0;
 	}
 	if (way == DOWN) {
-		if (map[character.y + 1][character.x] == 4) {//빈칸으로 이동
-			map[character.y][character.x] = previous_floor;
-			map[character.y + 1][character.x] = 1;
-			previous_floor = 4;
-			character.y++;
-		}
-		else if (map[character.y + 1][character.x] == 2) {//hole로 이동
-			map[character.y][character.x] = previous_floor;
-			map[character.y + 1][character.x] = 1;
-			previous_floor = 2;
-			character.y++;
-		}
-		else if (map[character.y + 1][character.x] == 3 && (map[character.y + 2][character.x] == 4 || map[character.y + 2][character.x] == 2)) {//밀기
-			map[character.y][character.x] = previous_floor;
-			map[character.y + 1][character.x] = 1;
-			map[character.y + 2][character.x] = 3;
-			character.y++;
-		}
+		ver1 = 1;
+		ver2 = 2;
+		ho1 = 0;
+		ho2 = 0;
 	}
 	if (way == RIGHT) {
-		if (map[character.y][character.x + 1] == 4) {//빈칸으로 이동
-			map[character.y][character.x] = previous_floor;
-			map[character.y][character.x + 1] = 1;
-			previous_floor = 4;
-			character.x++;
-		}
-		else if (map[character.y][character.x + 1] == 2) {//hole로 이동
-			map[character.y][character.x] = previous_floor;
-			map[character.y][character.x + 1] = 1;
-			previous_floor = 2;
-			character.x++;
-		}
-		else if (map[character.y][character.x + 1] == 3 && (map[character.y][character.x + 2] == 4 || map[character.y][character.x + 2] == 2)) {//밀기
-			map[character.y][character.x] = previous_floor;
-			map[character.y][character.x + 1] = 1;
-			map[character.y][character.x + 2] = 3;
-			character.x++;
-		}
+		ver1 = 0;
+		ver2 = 0;
+		ho1 = 1;
+		ho2 = 2;
+
 	}
 	if (way == LEFT) {
-		if (map[character.y][character.x - 1] == 4) {//빈칸으로 이동
-			map[character.y][character.x] = previous_floor;
-			map[character.y][character.x - 1] = 1;
-			previous_floor = 4;
-			character.x--;
+		ver1 = 0;
+		ver2 = 0;
+		ho1 = -1;
+		ho2 = -2;
+	}
+	if (map[character.y + ver1][character.x + ho1] == 4) {//빈칸으로 이동
+		map[character.y][character.x] = previous_floor;
+		map[character.y + ver1][character.x + ho1] = 1;
+		previous_floor = 4;
+		check++;
+	}
+	else if (map[character.y + ver1][character.x + ho1] == 2) {//hole로 이동
+		map[character.y][character.x] = previous_floor;
+		map[character.y + ver1][character.x + ho1] = 1;
+		previous_floor = 2;
+		check++;
+	}
+	else if (map[character.y + ver1][character.x + ho1] == 3 && (map[character.y + ver2][character.x + ho2] == 4 || map[character.y + ver2][character.x + ho2] == 2)) {//밀기
+		map[character.y][character.x] = previous_floor;
+		map[character.y + ver1][character.x + ho1] = 1;
+		map[character.y + ver2][character.x + ho2] = 3;
+		check++;
+	}
+
+	if (check == 1) {
+		if (way == UP) {
+			character.y--;
 		}
-		else if (map[character.y][character.x - 1] == 2) {//hole로 이동
-			map[character.y][character.x] = previous_floor;
-			map[character.y][character.x - 1] = 1;
-			previous_floor = 2;
-			character.x--;
+		if (way == DOWN) {
+			character.y++;
 		}
-		else if (map[character.y][character.x - 1] == 3 && (map[character.y][character.x - 2] == 4 || map[character.y][character.x - 2] == 2)) {//밀기
-			map[character.y][character.x] = previous_floor;
-			map[character.y][character.x - 1] = 1;
-			map[character.y][character.x - 2] = 3;
+		if (way == RIGHT) {
+			character.x++;
+		}
+		if (way == LEFT) {
 			character.x--;
 		}
 	}
+	
 }
 
 int fill_check(void) {
@@ -254,17 +245,17 @@ int main(void) {
 	int key;
 	int map_num;
 
-	remove_cursor(); 
+	remove_cursor();
 	system("mode con:cols=60 lines=25");
 	srand(time(NULL));
 
-	while(1)
+	while (1)
 	{
 		select_menu();
 		if (choice == 1) break;
-		map_num=select_map();
+		map_num = select_map();
 
-		init_map();
+		init_global();
 		load_map(map_num);
 		memorise_stone_position();
 		show_map();
@@ -286,7 +277,7 @@ int main(void) {
 			Sleep(10);
 		}
 		game_over();
-
+		free(stone_position);
 		Sleep(1000);
 		system("cls");
 	}
