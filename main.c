@@ -157,6 +157,7 @@ void move_character(int way) {
 		if (way == LEFT) {
 			character.x--;
 		}
+		move++;
 	}
 	
 }
@@ -270,7 +271,6 @@ int main(void) {
 			key = getch();
 			if (key == UP || key == DOWN || key == RIGHT || key == LEFT) {
 				move_character(key);
-				move++;
 				show_map();
 			}
 			fflush(stdin);
